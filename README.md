@@ -6,16 +6,16 @@ This code work with pixljs (Espruino)
 # Temperature sensor
 > The sensor temperature value is not a proportional value
 
-I use a voltage divider to get a value between 0.12v & 3.17v
+I use a voltage divider to get a value between 0.13v & 3.17v
 
 Wiring
 ```
-GND o---| R2 |---(A0)---| Bosch sensor |---o 3.3V
+GND o---| R2/Bosch sensor |---(A0)---| R1 |---o 3.3V
 ```
 
 With:
-- Bosch sensor between 71.9 Ohms (140°C) <-> 44864 Ohms (-40°C)
-- R2 = 1800 Ohms
+- R1 = 1800 Ohms
+- R2/Bosch sensor between 71.9 Ohms (140°C) <-> 44864 Ohms (-40°C)
 
 How it works ?
 - I use a reference table 
