@@ -3,17 +3,59 @@ The main goal of this test project is to display the temperature and the pressur
 
 This code work with pixljs (Espruino)
 
-## Temperature sensor
+# Temperature sensor
 > The sensor temperature value is not a proportional value
 
+I use a voltage divider to get a value between 0.12v & 3.17v
+
+Wiring
+```
+GND o---| R2 |---(A0)---| Bosch sensor |---o 3.3V
+```
+
+With:
+- Bosch sensor between 71.9 Ohms (140°C) <-> 44864 Ohms (-40°C)
+- R2 = 1800 Ohms
+
+How it works ?
 - I use a reference table 
 - If the value is known in the table, I return the matched value
 - If the value is between 2 values in the table, I return an estimated value thanks to a linear function
 
-## Pressure sensor
+# Pressure sensor
 > The sensor pressure value is a proportional value
 
-- I use a linear function
+I use a voltage divider to get a value between 0.37v & 3.3v
+
+Wiring
+```
+GND o---| R2 |---(A1)---| R1 |---o Bosch sensor
+```
+
+With:
+- R1 = 1200 Ohms
+- R2 = 3300 Ohms
+
+How it works ?
+- I use a linear function to return an estimated value of the pressure
+
+Bosch specification:
+- V1 = Output voltage
+- V2 = Output voltage from voltage divider (4.5v -> 3.3v)
+ 
+ | PSI |  V1  |  V2  |  ADC  |
+ |-----|------|------|-------| 
+ |   0 | 0.50 | 0.37 | 0.111 |
+ | 145 | 4.50 | 3.30 | 1.000 |
+
+```
+A la pression atmosphérique ambiante (Environ 15 PSI), la sonde doit sortir quelque chose entre 0.5 et 0.75V selon la spécification
+Sauf que la sonde délivre une tension plus basse que spécifié (0.541v)
+Si 0.541v, je dois obtenir 0.40v en sortie de pont diviseur (Valeur mesurée: 0.39v)
+Si 0.39v, alors 0.118 en valeur ADC (Valeur constatée: 0.123)
+Si 0.123, alors ma fonction linéaire retourne 2 psi (Soit 0.14 bar)
+En abaissant la valeur minimale 0.111 (Ya) à 0.03, cela permet d'obtenir 14 psi environ, soit 0.9 bar  
+```
 
 # About linear functions
 ## Linear function (Line cut the origin)

@@ -2,6 +2,11 @@ const Table  = require("lib.table.js")
 const Linear = require("lib.linear.js")
 const Queue  = require("lib.queue.js")
 
+/**
+ * 
+ * 
+ * Table de correspondance Valeur ADC (Proportionnelle à la résistance (Ohms) de la sonde) <-> Température (°C)
+ */
 const TBL_BOSCH_TEMP = [
    [0.037, -40], //0
    [0.062, -30],
@@ -24,23 +29,15 @@ const TBL_BOSCH_TEMP = [
    [0.959, 140], //18
 ]
 
-/**
- * Ya devrait valoir 0.11111 si on s'en tient à la spécification de la sonde
- * Sauf qu'elle délivre une tension plus basse que prévue, ce qui donne 0.1 bar à pression ambiante au lieu de 1 bar
- * Donc je bidouille la fonction linéaire pour qu'elle s'adapte à la réalité de la sonde
- */
 const BOSCH_PRESSUR_SENSOR = {
   Xa: 0,
-  Ya: 0.030,
+  Ya: 0.05, //See README.md to understand with I have replace the 0.111 value
   Xb: 145,
   Yb: 1.0,
 }
 
-const UNITE = 145
-const REFERENCE = 1
-const MIN_VALUE = 0.030 //Normalement c'est 0.11111 mais la sonde Bosch délivre une tension plus basse que sa spécification, ce qui donne 0.1 bar à pression ambiante au lieu de 1 bar
-
 const queueTemperature = new Queue()
+const queuePressure = new Queue()
 
 /**
  * 
@@ -109,14 +106,16 @@ function getTemperatureValue(){
  * 
  */
 function getPressureValue(){
-	const A1 = analogRead(A1)
-	console.log("A1", A1)
+	const pressureValue = Linear.getXValue(
+		BOSCH_PRESSUR_SENSOR,
+		analogRead(A1)
+	) //psi
 
-	const pressureValue = Linear.getXValue(BOSCH_PRESSUR_SENSOR, A1)
-	const bar = psi2bar(pressureValue)
+	queuePressure.add(pressureValue)
+	//queuePressure.toConsole()
+	//console.log("averageValue", queuePressure.averageValue)
 
-	console.log("pressureValue", pressureValue, "psi", bar, "bar")
-	return bar
+	return psi2bar(queuePressure.averageValue)
 }
 
 

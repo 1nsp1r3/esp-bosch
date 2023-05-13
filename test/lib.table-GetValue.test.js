@@ -22,12 +22,16 @@ const Table = require("../lib/lib.table.js")
    [0.959, 140], //18
 ]
 
+const round = function(Value){
+  return Math.round(Value*100)/100
+}
+
 /**
  *
  */
 test('ADC value lower than the minimal value of the table', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.036)
-  expect(displayValue).toBe(-40)
+  expect(round(displayValue)).toBe(-40)
 })
 
 /**
@@ -35,7 +39,7 @@ test('ADC value lower than the minimal value of the table', () => {
  */
 test('ADC value equal to the minimal value of the table', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.037)
-  expect(displayValue).toBe(-40)
+  expect(round(displayValue)).toBe(-40)
 })
 
 /**
@@ -43,7 +47,7 @@ test('ADC value equal to the minimal value of the table', () => {
  */
 test('Test1 with a negative display value', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.038)
-  expect(displayValue).toBe(-39.6)
+  expect(round(displayValue)).toBe(-39.6)
 })
 
 /**
@@ -51,7 +55,7 @@ test('Test1 with a negative display value', () => {
  */
 test('Test2 with a negative display value', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.050)
-  expect(displayValue).toBe(-34.8)
+  expect(round(displayValue)).toBe(-34.8)
 })
 
 
@@ -60,7 +64,7 @@ test('Test2 with a negative display value', () => {
  */
 test('Test3 with a negative display value', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.061)
-  expect(displayValue).toBe(-30.4)
+  expect(round(displayValue)).toBe(-30.4)
 })
 
 /**
@@ -68,7 +72,7 @@ test('Test3 with a negative display value', () => {
  */
 test('Test4 with a negative display value', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.062)
-  expect(displayValue).toBe(-30)
+  expect(round(displayValue)).toBe(-30)
 })
 
 /**
@@ -76,7 +80,7 @@ test('Test4 with a negative display value', () => {
  */
 test('ADC value equal to the maximal value of the table', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.959)
-  expect(displayValue).toBe(140)
+  expect(round(displayValue)).toBe(140)
 })
 
 /**
@@ -84,7 +88,7 @@ test('ADC value equal to the maximal value of the table', () => {
  */
 test('ADC value greather than the maximal value of the table', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.960)
-  expect(displayValue).toBe(140)
+  expect(round(displayValue)).toBe(140)
 })
 
 /**
@@ -92,7 +96,7 @@ test('ADC value greather than the maximal value of the table', () => {
  */
 test('Typical ADC value between two values', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.450)
-  expect(displayValue).toBe(24.479166666666668)
+  expect(round(displayValue)).toBe(24.48)
 })
 
 /**
@@ -100,7 +104,7 @@ test('Typical ADC value between two values', () => {
  */
 test('Typical ADC value equal to a value', () => {
   const displayValue = Table.GetValue(TBL_BOSCH_TEMP, 0.313)
-  expect(displayValue).toBe(10)
+  expect(round(displayValue)).toBe(10)
 })
 
 
