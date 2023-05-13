@@ -24,6 +24,18 @@ const TBL_BOSCH_TEMP = [
    [0.959, 140], //18
 ]
 
+/**
+ * Ya devrait valoir 0.11111 si on s'en tient à la spécification de la sonde
+ * Sauf qu'elle délivre une tension plus basse que prévue, ce qui donne 0.1 bar à pression ambiante au lieu de 1 bar
+ * Donc je bidouille la fonction linéaire pour qu'elle s'adapte à la réalité de la sonde
+ */
+const BOSCH_PRESSUR_SENSOR = {
+  Xa: 0,
+  Ya: 0.030,
+  Xb: 145,
+  Yb: 1.0,
+}
+
 const UNITE = 145
 const REFERENCE = 1
 const MIN_VALUE = 0.030 //Normalement c'est 0.11111 mais la sonde Bosch délivre une tension plus basse que sa spécification, ce qui donne 0.1 bar à pression ambiante au lieu de 1 bar
@@ -100,7 +112,7 @@ function getPressureValue(){
 	const A1 = analogRead(A1)
 	console.log("A1", A1)
 
-	const pressureValue = Linear.getEstimatedValue(UNITE, REFERENCE, MIN_VALUE, A1)
+	const pressureValue = Linear.getXValue(BOSCH_PRESSUR_SENSOR, A1)
 	const bar = psi2bar(pressureValue)
 
 	console.log("pressureValue", pressureValue, "psi", bar, "bar")
