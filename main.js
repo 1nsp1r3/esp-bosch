@@ -38,14 +38,14 @@ function displayFloat(FloatValue){
 
 
 function loop(){
-	const temperatureValue = Table.GetDisplayValue(
+	const temperatureValue = Table.GetValue(
 		TBL_BOSCH_TEMP,
 		analogRead(A0)
 	)
 
 	queueTemperature.add(temperatureValue)
-	queueTemperature.toConsole()
-	console.log('averageValue', queueTemperature.averageValue)
+	//queueTemperature.toConsole()
+	//console.log('averageValue', queueTemperature.averageValue)
 
 	g.clear()
 	displayHeader()
