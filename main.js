@@ -1,5 +1,6 @@
-const Table = require("lib.table.js")
-const Queue = require("lib.queue.js")
+const Table  = require("lib.table.js")
+const Linear = require("lib.linear.js")
+const Queue  = require("lib.queue.js")
 
 const TBL_BOSCH_TEMP = [
    [0.037, -40], //0
@@ -23,36 +24,104 @@ const TBL_BOSCH_TEMP = [
    [0.959, 140], //18
 ]
 
+const UNITE = 145
+const REFERENCE = 1
+const MIN_VALUE = 0.030 //Normalement c'est 0.11111 mais la sonde Bosch délivre une tension plus basse que sa spécification, ce qui donne 0.1 bar à pression ambiante au lieu de 1 bar
+
 const queueTemperature = new Queue()
 
-function displayHeader(){
-	g.setFontBitmap() //Small font
-	g.drawString("Temperature :")	
+/**
+ * 
+ */
+function psi2bar(PsiValue){
+	return PsiValue / 14.5038 
 }
 
-function displayFloat(FloatValue){
-	const val = FloatValue.toFixed(1)
+/**
+ * 
+ */
+function displayTemperature(FloatValue){
+	const text = FloatValue.toFixed(1)
 	g.setFontVector(40) //Big font
-	g.drawString(val, (g.getWidth()-g.stringWidth(val))/2, 10)
+	g.drawString(
+		text,
+		0, //X
+		0  //Y
+	)
+	const stringWidth = g.stringWidth(text)
+	g.setFont("4x6")
+	g.drawString(
+		"o",
+		stringWidth + 5, //X
+		0                //Y
+	)
 }
 
+/**
+ * 
+ */
+function displayPressure(FloatValue){
+	const text = FloatValue.toFixed(1).toString()
+	const stringWidth = g.stringWidth(text)
+	const fontHeight = 30
+	g.setFontVector(fontHeight) //Big font
+	g.drawString(
+		text,
+		g.getWidth() - g.stringWidth(text)-9, //X
+		g.getHeight() - fontHeight+6          //Y
+	)
+	g.setFont("4x6")
+	g.drawString(
+		"bar",
+		117, //X
+		59   //Y
+	)
+}
 
-function loop(){
+/**
+ * 
+ */
+function getTemperatureValue(){
 	const temperatureValue = Table.GetValue(
 		TBL_BOSCH_TEMP,
 		analogRead(A0)
 	)
-
 	queueTemperature.add(temperatureValue)
 	//queueTemperature.toConsole()
-	//console.log('averageValue', queueTemperature.averageValue)
+	//console.log("averageValue", queueTemperature.averageValue)
 
-	g.clear()
-	displayHeader()
-	displayFloat(queueTemperature.averageValue)
-	g.flip()	
+	return queueTemperature.averageValue
+}
+
+/**
+ * 
+ */
+function getPressureValue(){
+	const A1 = analogRead(A1)
+	console.log("A1", A1)
+
+	const pressureValue = Linear.getEstimatedValue(UNITE, REFERENCE, MIN_VALUE, A1)
+	const bar = psi2bar(pressureValue)
+
+	console.log("pressureValue", pressureValue, "psi", bar, "bar")
+	return bar
 }
 
 
+/**
+ * 
+ */
+function loop(){
+	g.clear()
+	displayTemperature(
+		getTemperatureValue()
+	)
+	displayPressure(
+		getPressureValue()
+	)
+	g.flip()	
+}
+
+LED1.set()
 setInterval(loop, 1000)
 loop()
