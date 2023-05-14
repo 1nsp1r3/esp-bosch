@@ -48,15 +48,6 @@ Bosch specification:
  |   0 | 0.50 | 0.37 | 0.111 |
  | 145 | 4.50 | 3.30 | 1.000 |
 
-```
-A la pression atmosphérique ambiante (Environ 15 PSI), la sonde doit sortir quelque chose entre 0.5 et 0.75V selon la spécification
-Sauf que la sonde délivre une tension plus basse que spécifié (0.541v)
-Si 0.541v, je dois obtenir 0.40v en sortie de pont diviseur (Valeur mesurée: 0.39v)
-Si 0.39v, alors 0.118 en valeur ADC (Valeur constatée: 0.123)
-Si 0.123, alors ma fonction linéaire retourne 2 psi (Soit 0.14 bar)
-En abaissant la valeur minimale 0.111 (Ya) à 0.03, cela permet d'obtenir 14 psi environ, soit 0.9 bar  
-```
-
 # About linear functions
 ## Linear function (Line cut the origin)
 `y = ax`

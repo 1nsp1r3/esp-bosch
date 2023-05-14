@@ -3,9 +3,8 @@ const Linear = require("lib.linear.js")
 const Queue  = require("lib.queue.js")
 
 /**
- * 
- * 
- * Table de correspondance Valeur ADC (Proportionnelle à la résistance (Ohms) de la sonde) <-> Température (°C)
+ * See doc/temperature.ods
+ * ADC value <-> temperature °C
  */
 const TBL_BOSCH_TEMP = [
   [ 0.038, 140], //0
@@ -29,9 +28,14 @@ const TBL_BOSCH_TEMP = [
   [ 0.961, -40], //18
 ]
 
+/**
+ * See doc/pressure.ods
+ * X: psi
+ * Y: ADC value
+ */
 const BOSCH_PRESSUR_SENSOR = {
   Xa: 0,
-  Ya: 0.05, //See README.md to understand with I have replace the 0.111 value
+  Ya: 0.111,
   Xb: 145,
   Yb: 1.0,
 }
