@@ -1,6 +1,10 @@
-const Table  = require("lib.table.js")
-const Linear = require("lib.linear.js")
-const Queue  = require("lib.queue.js")
+const Table               = require("lib.table.js")
+const Linear              = require("lib.linear.js")
+const Queue               = require("lib.queue.js")
+const DateFormat          = require("dateformat.js")
+const Font7x11Numeric7Seg = require("Font7x11Numeric7Seg.js")
+
+Font7x11Numeric7Seg.add(Graphics)
 
 /**
  * See doc/temperature.ods
@@ -44,14 +48,14 @@ const queueTemperature = new Queue()
 const queuePressure = new Queue()
 
 /**
- * 
+ *
  */
 function psi2bar(PsiValue){
 	return PsiValue / 14.5038 
 }
 
 /**
- * 
+ *
  */
 function displayTemperature(FloatValue){
 	const text = FloatValue.toFixed(1)
@@ -71,7 +75,7 @@ function displayTemperature(FloatValue){
 }
 
 /**
- * 
+ *
  */
 function displayPressure(FloatValue){
 	const text = FloatValue.toFixed(1).toString()
@@ -92,7 +96,21 @@ function displayPressure(FloatValue){
 }
 
 /**
- * 
+ *
+ */
+function displayElapsedTime(ElapsedTime){
+	const stringWidth = g.stringWidth(ElapsedTime)
+	//g.setFontVector(12)
+	g.setFont("7x11Numeric7Seg")
+	g.drawString(
+		ElapsedTime,
+		0,                 //X
+		g.getHeight() - 11 //Y
+	)
+}
+
+/**
+ *
  */
 function getTemperatureValue(){
 	const temperatureValue = Table.GetValue(
@@ -107,7 +125,7 @@ function getTemperatureValue(){
 }
 
 /**
- * 
+ *
  */
 function getPressureValue(){
 	const pressureValue = Linear.getXValue(
@@ -122,9 +140,10 @@ function getPressureValue(){
 	return psi2bar(queuePressure.averageValue)
 }
 
+const startedTime = Date.now()
 
 /**
- * 
+ *
  */
 function loop(){
 	g.clear()
@@ -134,7 +153,11 @@ function loop(){
 	displayPressure(
 		getPressureValue()
 	)
-	g.flip()	
+	displayElapsedTime(
+		DateFormat.elapsedTime(startedTime)
+	)
+
+	g.flip()
 }
 
 LED1.set()
