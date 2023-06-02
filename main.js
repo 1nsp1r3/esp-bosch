@@ -3,6 +3,7 @@ const Linear              = require("lib.linear.js")
 const Queue               = require("lib.queue.js")
 const DateFormat          = require("dateformat.js")
 const Font7x11Numeric7Seg = require("Font7x11Numeric7Seg.js")
+const Gap                 = require("lib.ble.gap.js")
 
 Font7x11Numeric7Seg.add(Graphics)
 
@@ -142,20 +143,26 @@ function getPressureValue(){
 
 const startedTime = Date.now()
 
-/**
+/*
  *
  */
 function loop(){
 	g.clear()
-	displayTemperature(
-		getTemperatureValue()
-	)
-	displayPressure(
-		getPressureValue()
-	)
+	const temperature = getTemperatureValue()
+	const pressure    = getPressureValue()
+
+	displayTemperature(temperature)
+	displayPressure(pressure)
 	displayElapsedTime(
 		DateFormat.elapsedTime(startedTime)
 	)
+
+  Gap.Advertising({
+    name: 'MX5',
+    interval: 1000, //ms
+    UUID: 0x1809,
+    value: Math.round(temperature)
+  })
 
 	g.flip()
 }
