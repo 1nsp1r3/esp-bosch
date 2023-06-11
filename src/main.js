@@ -64,10 +64,11 @@ function loop(){
   /**
   * PRESSURE
   */
-  const rawPressure = LibLinear.getXValue( //0 - 145 PSI
+  let rawPressure = LibLinear.getXValue( //0 - 145 PSI
     BOSCH_PRESSUR_SENSOR,
     analogRead(A1)
   ) //psi
+  if (rawPressure < 0) rawPressure = 0 //Pressure can not ne negative
   queuePressure.add(rawPressure)
   const avgPressure = queuePressure.averageValue
 
